@@ -45,7 +45,8 @@ sourceUi <- function() {
                  br(),
                  br(),
                  br(),
-                 actionButton("clearAllResults", "Clear Dataset and Results", 
+                 actionButton("clearAllResults", 
+                              "Clear the Dataset and Results", 
                               icon = icon("exclamation", lib = "font-awesome")),
                  br()
                )),
