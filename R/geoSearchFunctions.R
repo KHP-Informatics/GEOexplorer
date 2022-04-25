@@ -223,7 +223,12 @@ searchGeo <- function(searchTerm,
                            onclick =
                              'Shiny.onInputChange(\"loadGeoSearchAsFirstDataset\",
                            this.id)' )
-  return(searchResultsTable)
+  
+  geoSearchResults <- NULL
+  geoSearchResults$searchResultsTable <- searchResultsTable
+  geoSearchResults$totalResults <- eSearchData$Count
+  
+  return(geoSearchResults)
 }
 
 #' A Function to add action buttons to a table

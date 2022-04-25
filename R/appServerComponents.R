@@ -102,14 +102,23 @@ sourceServer <- function(input, output, session) {
           return(NULL)
         })
       
+      # Load search results table
+      output$totalGeoSearchResults <- tryCatch({
+        renderText(
+          paste0("Displaying ", as.character(all$geoSearchResultsNumber), 
+          " results out of ", as.character(all$geoSearchResults$totalResults), 
+          " total results." ))
+      },
+      error = function(e) {
+        # return a safeError if a parsing error occurs
+        stop(safeError(e))
+      })
       
       # Load search results table
       output$geoSearchResults <- tryCatch({
         renderDataTable(
-          all$geoSearchResults,
-          server = FALSE,
-          escape = FALSE,
-          selection = 'none'
+          all$geoSearchResults$searchResultsTable, server = FALSE, 
+          escape = FALSE, selection = 'none'
         )
       },
       error = function(e) {
