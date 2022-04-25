@@ -46,6 +46,12 @@ sourceServer <- function(input, output, session) {
       }
     })
     
+    # Button to clear all results
+    observeEvent(input$clearSearchResults, {
+      output$geoSearchResults <- renderDataTable(
+          NULL, server = FALSE, escape = FALSE, selection = 'none' )
+    })
+    
     # Common steps
     # Define variables
     all <- reactiveValues()

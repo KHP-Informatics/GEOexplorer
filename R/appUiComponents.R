@@ -760,6 +760,11 @@ sourceGeoSearchUi <- function() {
     br(),
     br(),
     dataTableOutput('geoSearchResults'),
+    br(),
+    br(),
+    actionButton("clearSearchResults", 
+                 "Clear Search Results", 
+                 icon = icon("exclamation", lib = "font-awesome")),
     width = 12
   )
   return(geoSearchUiComponents)
