@@ -35,6 +35,15 @@ sourceServer <- function(input, output, session) {
       resetExploratoryDataAnalaysisPlots(input, output, session)
       resetDifferentialGeneExpressionPlots(input, output, session)
       resetGeneEnrichmentOutputs(input, output, session)
+      updateRadioButtons(session, "dataSetType", selected = "Combine")
+      updateRadioButtons(session, "dataSetType", selected = "Single")
+      
+      if (input$dataSource == "GEO") {
+        updateTextInput(session, "geoAccessionCode", value = "")
+        updateRadioButtons(session, "dataSource", selected = "Upload")
+      } else {
+        updateRadioButtons(session, "dataSource", selected = "GEO")
+      }
     })
     
     # Common steps
@@ -1638,8 +1647,12 @@ loadGeoDataset <- function (input,
     
     if (errorChecks$continueWorkflow) {
       # Get a list of all the platforms
-      platforms <- reactive({
-        extractPlatforms(all$allGset())
+      platforms <- reactive({tryCatch({
+        extractPlatforms(all$allGset())},
+        error = function(e) {
+          return(c())
+        }
+        )
       })
       
       # Select the top platform
@@ -1649,9 +1662,7 @@ loadGeoDataset <- function (input,
       
       # Update Platform Options
       platformObserve <- observe({
-        updateSelectInput(session,
-                          "platform",
-                          choices = platforms(),
+        updateSelectInput(session, "platform", choices = platforms(), 
                           selected = platform())
       })
     }
@@ -2523,15 +2534,6 @@ loadDataSetUiComponents <- function(input,
         errorChecks <- resetErrorChecks(errorChecks)
       })
       
-      output$output4 <- renderUI({
-        radioButtons(
-          "typeOfData",
-          label = "Is the data from Microarray or RNA Sequencing?",
-          choices = list("Microarray", "RNA Sequencing"),
-          selected = "Microarray"
-        )
-      })
-      
       # File Upload Widget
       output$output5 <- renderUI({
         fileInput(
@@ -2663,15 +2665,6 @@ loadDataSetCombinationUiComponents <- function(input, output, session,
         )
       })
       
-      output$output4 <- renderUI({
-        radioButtons(
-          "typeOfData",
-          label = "Is the data from Microarray or RNA Sequencing?",
-          choices = list("Microarray", "RNA Sequencing"),
-          selected = "Microarray"
-        )
-      })
-      
       # Second Data Set Information Widget
       output$output7 <- renderUI({
         HTML(
@@ -2715,14 +2708,6 @@ loadDataSetCombinationUiComponents <- function(input, output, session,
       # Set all UI widgets to blank
       output$output2 <- renderUI({})
       output$output15 <- renderUI({})
-      output$output4 <- renderUI({
-        radioButtons(
-          "typeOfData",
-          label = "Is the data from Microarray or RNA Sequencing?",
-          choices = list("Microarray", "RNA Sequencing"),
-          selected = "Microarray"
-        )
-      })
       output$output7 <- renderUI({})
       output$output8 <- renderUI({})
       output$output9 <- renderUI({})

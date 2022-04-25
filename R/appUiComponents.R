@@ -84,7 +84,12 @@ sourceSideBarUi <- function() {
       choices = list("GEO", "Upload"),
       selected = "GEO"
     ),
-    uiOutput("output4"),
+    radioButtons(
+      "typeOfData",
+      label = "Is the data from Microarray or RNA Sequencing?",
+      choices = list("Microarray", "RNA Sequencing"),
+      selected = "Microarray"
+    ),
     uiOutput("output5"),
     uiOutput("output6"),
     uiOutput("output7"),
@@ -796,7 +801,8 @@ sourceEnrichmentnUi <- function() {
                                        br(),
                                        selectInput("enrichDatabases",
                                                    "Select a database to use
-                                                   for gene enrich analysis",
+                                                   for gene enrichment 
+                                                   analysis",
                                                    c("GO_Molecular_
                                                      Function_2015",
                                                      "GO_Cellular_
