@@ -2146,12 +2146,19 @@ performGeneEnrichmentAnalysis <- function (input,
               })
             
             enrichedDifferentiallyExpressedGenes <- tryCatch({
+              calculateLogAdjustedPValue(enrichedDifferentiallyExpressedGenes)},
+              error = function(e) {
+                # return a safeError if a parsing error occurs
+                return(enrichedDifferentiallyExpressedGenes)
+              })
+            
+            enrichedDifferentiallyExpressedGenes <- tryCatch({
               calculateOverlapFractions(
                 enrichedDifferentiallyExpressedGenes)}, error = function(e) {
                   # return a safeError if a parsing error occurs
                   return(enrichedDifferentiallyExpressedGenes)
                 })
-            
+
             # Extract Upregulated genes
             upregulatedGenes <- tryCatch({
               extractUpregulatedGenes(differentiallyExpressedGenes)
@@ -2209,6 +2216,13 @@ performGeneEnrichmentAnalysis <- function (input,
               
               enrichedUpregulatedGenes <- tryCatch({
                 calculateLogPValue(enrichedUpregulatedGenes)},
+                error = function(e) {
+                  # return a safeError if a parsing error occurs
+                  return(enrichedUpregulatedGenes)
+                })
+              
+              enrichedUpregulatedGenes <- tryCatch({
+                calculateLogAdjustedPValue(enrichedUpregulatedGenes)},
                 error = function(e) {
                   # return a safeError if a parsing error occurs
                   return(enrichedUpregulatedGenes)
@@ -2289,11 +2303,19 @@ performGeneEnrichmentAnalysis <- function (input,
                 })
               
               enrichedDownregulatedGenes <- tryCatch({
+                calculateLogAdjustedPValue(enrichedDownregulatedGenes)},
+                error = function(e) {
+                  # return a safeError if a parsing error occurs
+                  return(enrichedDownregulatedGenes)
+                })
+              
+              enrichedDownregulatedGenes <- tryCatch({
                 calculateOverlapFractions(
                   enrichedDownregulatedGenes)}, error = function(e) {
                     # return a safeError if a parsing error occurs
                     return(enrichedDownregulatedGenes)
                   })
+
             }
             
             observeEvent(input$geneEnrichmentDataBarchartPlot,{

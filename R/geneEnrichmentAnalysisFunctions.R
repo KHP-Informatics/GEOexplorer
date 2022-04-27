@@ -26,8 +26,7 @@ extractUpregulatedGenes <- function(differentiallyExpressedGenes) {
   # Remove downregulated genes
   upregulatedGenes <-
     differentiallyExpressedGenes[!(
-      differentiallyExpressedGenes[, "Group1-Group2"] ==
-                                     -1),]
+      differentiallyExpressedGenes[, "Group1-Group2"] ==-1),]
 
   return(upregulatedGenes)
 }
@@ -110,6 +109,17 @@ calculateLogPValue  <- function(geneEnrichmentTable) {
   return(geneEnrichmentTable)
 }
 
+#' A Function to calculate the -log(Adjusted P value)
+#' @author Guy Hunt
+#' @noRd
+calculateLogAdjustedPValue  <- function(geneEnrichmentTable) {
+  
+  geneEnrichmentTable[,"Minus.Log.Adjusted.P.Value"] <-
+    0-log10(geneEnrichmentTable[, "Adjusted.P.value"])
+  
+  return(geneEnrichmentTable)
+}
+
 #' A Function to calculate the overlap fraction values
 #' @importFrom stringr str_split
 #' @author Guy Hunt
@@ -148,11 +158,13 @@ interactiveGeneEnrichmentManhattanPlot  <- function(geneEnrichmentTable,
 
   selectedColumn <- geneEnrichmentColumnSelection(geneEnrichmentTable,
                                                   columnToSort)
+  
+  yAxisTitle <- convertGeneEnrichmentColumnNameToUserFriendlyName(columnToSort)
 
   fig19 <- plot_ly(geneEnrichmentTable,
                  y = selectedColumn,
                  x = ~Term,
-                 color = selectedColumn,
+                 #color = selectedColumn,
                  type = "scatter",
                  mode = 'markers',
                  text = geneEnrichmentPlotText(geneEnrichmentTable)
@@ -163,7 +175,7 @@ interactiveGeneEnrichmentManhattanPlot  <- function(geneEnrichmentTable,
                                      showticklabels = FALSE,
                                      title = ""
                                      ),
-                        yaxis = list(title = columnToSort))
+                        yaxis = list(title = yAxisTitle))
   
   try(fig19 <- toWebGL(fig19))
   
@@ -179,14 +191,14 @@ interactiveGeneEnrichmentVolcanoPlot  <- function(geneEnrichmentTable) {
     data = geneEnrichmentTable,
     x = ~ Odds.Ratio,
     y = ~ Minus.Log.P.Value,
-    color = ~ Combined.Score,
+    #color = ~ Combined.Score,
     text = geneEnrichmentPlotText(geneEnrichmentTable),
     type = 'scatter',
     mode = 'markers')
 
   fig20 <- fig20 %>% layout(
     xaxis = list(title = "Odds Ratio"),
-    yaxis = list(title = "-log10(P-value)")
+    yaxis = list(title = "-log10(P-Value)")
   )
   
   try(fig20 <- toWebGL(fig20))
@@ -202,19 +214,43 @@ interactiveGeneEnrichmentBarPlot  <- function(geneEnrichmentTable,
                                               columnToSort) {
   selectedColumn <- geneEnrichmentColumnSelection(geneEnrichmentTable,
                                                   columnToSort)
+  
+  xAxisTitle <- convertGeneEnrichmentColumnNameToUserFriendlyName(columnToSort)
 
   fig21 <- plot_ly(geneEnrichmentTable,
                  x = selectedColumn,
-                 color = selectedColumn,
+                 #color = selectedColumn,
                  text = geneEnrichmentPlotText(geneEnrichmentTable),
                  y = ~Term, type = 'bar', orientation = 'h')
 
-  fig21 <- fig21 %>% layout(xaxis = list(title = columnToSort),
+  fig21 <- fig21 %>% layout(xaxis = list(title = xAxisTitle),
                         yaxis = list(title = "Term",
                                      categoryorder = "array",
                                      categoryarray = selectedColumn))
   
   return(fig21)
+}
+
+#' A Function to user friendly column names
+#' @author Guy Hunt
+#' @noRd
+convertGeneEnrichmentColumnNameToUserFriendlyName <- function(columnToSort) {
+  columnToSort <- if (columnToSort == "P.value") {
+    "P-Value"
+  } else if (columnToSort == "Adjusted.P.value") {
+    "Adjusted P-value"
+  } else if (columnToSort == "Odds.Ratio") {
+    "Odds Ratio"
+  } else if (columnToSort == "Combined.Score") {
+    "Combined Score"
+  } else if (columnToSort == "Minus.Log.P.Value") {
+    "-log10(P-Value)"
+  } else if (columnToSort == "Minus.Log.Adjusted.P.Value") {
+    "-log10(Adjusted P-Value)"
+  } else if (columnToSort == "Overlap.Value") {
+    "Overlap Value"
+  }
+  return(columnToSort)
 }
 
 #' A Function to return the gene enrichment column selection logic
@@ -235,7 +271,9 @@ geneEnrichmentColumnSelection <- function(geneEnrichmentTable, columnToSort) {
             if(columnToSort == "Minus.Log.P.Value") {
               ~Minus.Log.P.Value} else
               if(columnToSort == "Overlap.Value") {
-                ~Overlap.Value}
+                ~Overlap.Value} else
+                  if(columnToSort == "Minus.Log.Adjusted.P.Value") {
+                    ~Minus.Log.P.Value}
   return(columnSelection)
 }
 

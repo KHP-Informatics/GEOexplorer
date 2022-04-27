@@ -896,6 +896,7 @@ sourceEnrichmentnUi <- function() {
                                                               "Odds.Ratio",
                                                               "Combined.Score",
                                                               "Minus.Log.P.Value",
+                                                              "Minus.Log.Adjusted.P.Value",
                                                               "Overlap.Value"),
                                                   selected = "Minus.Log.P.Value"
                                                 )),
@@ -992,6 +993,7 @@ sourceEnrichmentnUi <- function() {
                                              "Odds.Ratio",
                                              "Combined.Score",
                                              "Minus.Log.P.Value",
+                                             "Minus.Log.Adjusted.P.Value",
                                              "Overlap.Value"
                                            ),
                                            selected = "Minus.Log.P.Value"
