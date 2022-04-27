@@ -1131,7 +1131,7 @@ interactivePrcompPcaIndividualsPlot <-
           }
         ,
         hoverinfo = text,
-        marker = list(color = ~ individualsStats$cos2[, 1],
+        marker = list(color = ~individualsStats$cos2[, 1],
                       size = 3)
       )
 
