@@ -159,12 +159,20 @@ interactiveGeneEnrichmentManhattanPlot  <- function(geneEnrichmentTable,
   selectedColumn <- geneEnrichmentColumnSelection(geneEnrichmentTable,
                                                   columnToSort)
   
+  colorColumn <- calculateColorColumn(columnToSort)
+  
+  colorColumnFormula <- geneEnrichmentColumnSelection(geneEnrichmentTable,
+                                                      colorColumn)
+  
+  colorColumnTitle <- calculateColorColumnTitle(colorColumn)
+  
+  
   yAxisTitle <- convertGeneEnrichmentColumnNameToUserFriendlyName(columnToSort)
 
   fig19 <- plot_ly(geneEnrichmentTable,
                  y = selectedColumn,
                  x = ~Term,
-                 #color = selectedColumn,
+                 color = colorColumnFormula,
                  type = "scatter",
                  mode = 'markers',
                  text = geneEnrichmentPlotText(geneEnrichmentTable)
@@ -176,6 +184,8 @@ interactiveGeneEnrichmentManhattanPlot  <- function(geneEnrichmentTable,
                                      title = ""
                                      ),
                         yaxis = list(title = yAxisTitle))
+  
+  fig19 <- fig19 %>% colorbar(title = colorColumnTitle)
   
   try(fig19 <- toWebGL(fig19))
   
@@ -191,15 +201,18 @@ interactiveGeneEnrichmentVolcanoPlot  <- function(geneEnrichmentTable) {
     data = geneEnrichmentTable,
     x = ~ Odds.Ratio,
     y = ~ Minus.Log.P.Value,
-    #color = ~ Combined.Score,
+    color = ~Combined.Score,
     text = geneEnrichmentPlotText(geneEnrichmentTable),
     type = 'scatter',
-    mode = 'markers')
+    mode = 'markers'
+  )
 
   fig20 <- fig20 %>% layout(
     xaxis = list(title = "Odds Ratio"),
     yaxis = list(title = "-log10(P-Value)")
   )
+  
+  fig20 <- fig20 %>% colorbar(title = "Combined Score")
   
   try(fig20 <- toWebGL(fig20))
   
@@ -216,10 +229,17 @@ interactiveGeneEnrichmentBarPlot  <- function(geneEnrichmentTable,
                                                   columnToSort)
   
   xAxisTitle <- convertGeneEnrichmentColumnNameToUserFriendlyName(columnToSort)
+  
+  colorColumn <- calculateColorColumn(columnToSort)
+  
+  colorColumnFormula <- geneEnrichmentColumnSelection(geneEnrichmentTable,
+                                                      colorColumn)
+  
+  colorColumnTitle <- calculateColorColumnTitle(colorColumn)
 
   fig21 <- plot_ly(geneEnrichmentTable,
                  x = selectedColumn,
-                 #color = selectedColumn,
+                 color = colorColumnFormula,
                  text = geneEnrichmentPlotText(geneEnrichmentTable),
                  y = ~Term, type = 'bar', orientation = 'h')
 
@@ -228,7 +248,30 @@ interactiveGeneEnrichmentBarPlot  <- function(geneEnrichmentTable,
                                      categoryorder = "array",
                                      categoryarray = selectedColumn))
   
+  fig21 <- fig21 %>% colorbar(title = colorColumnTitle)
+  
+  
   return(fig21)
+}
+
+#' A Function to user friendly column names
+#' @author Guy Hunt
+#' @noRd
+calculateColorColumnTitle <- function(colorColumn) {
+  if (colorColumn == "Odds.Ratio") {
+    return("Odds Ratio")} else {
+      return("-log10(Adjusted P-Value)")
+    }
+}
+
+#' A Function to user friendly column names
+#' @author Guy Hunt
+#' @noRd
+calculateColorColumn <- function(columnToSort) {
+  if (columnToSort == "Odds.Ratio") {
+    return("Minus.Log.Adjusted.P.Value")} else {
+      return("Odds.Ratio")
+    }
 }
 
 #' A Function to user friendly column names

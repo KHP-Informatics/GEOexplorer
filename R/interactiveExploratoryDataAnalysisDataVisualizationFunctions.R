@@ -798,7 +798,7 @@ interactivePrincompPcaIndividualsPlot <-
           }
         ,
         hoverinfo = text,
-        marker = list(color = ~ individualsStats$cos2[, 1],
+        marker = list(color = ~individualsStats$cos2[, 1],
                       size = 3)
       )
 
@@ -886,7 +886,7 @@ interactivePrincompPcaVariablesPlot <-
         mode = "markers",
         type = 'scatter'
         ,
-        marker = list(size = 10, color = ~ variableStats$contrib[, 1]),
+        marker = list(size = 10, color = ~variableStats$contrib[, 1]),
         name = rownames(pcaData)
       )
 
@@ -1316,7 +1316,7 @@ interactive3DPrcompPcaIndividualsPlot <-
           }
         ,
         hoverinfo = text,
-        marker = list(color = ~ individualsStats$cos2[, 1],
+        marker = list(color = ~individualsStats$cos2[, 1],
                       size = 3)
       )
 
@@ -1408,7 +1408,7 @@ interactivePrcompPcaVariablesPlot <-
         mode = "markers",
         type = 'scatter'
         ,
-        marker = list(size = 10, color = ~ variableStats$contrib[, 1]),
+        marker = list(size = 10, color = ~variableStats$contrib[, 1]),
         name = rownames(pcaData)
       )
 
@@ -1498,7 +1498,7 @@ interactive3DPrcompPcaVariablesPlot <-
         mode = "markers",
         type = 'scatter3d'
         ,
-        marker = list(size = 10, color = ~ variableStats$contrib[, 1]),
+        marker = list(size = 10, color = ~variableStats$contrib[, 1]),
         name = rownames(pcaData)
       )
 
